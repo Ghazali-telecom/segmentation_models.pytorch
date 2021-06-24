@@ -38,6 +38,7 @@ class Unet(SegmentationModel):
                 - pooling (str): One of "max", "avg". Default is "avg"
                 - dropout (float): Dropout factor in [0, 1)
                 - activation (str): An activation function to apply "sigmoid"/"softmax" (could be **None** to return logits)
+        other_params: Dictionary with parameters of the encoder (e.g drop_connect_rate for efficientnet models).
 
     Returns:
         ``torch.nn.Module``: Unet
@@ -59,6 +60,7 @@ class Unet(SegmentationModel):
         classes: int = 1,
         activation: Optional[Union[str, callable]] = None,
         aux_params: Optional[dict] = None,
+        other_params : Optional[dict] = None,
     ):
         super().__init__()
 
@@ -67,6 +69,7 @@ class Unet(SegmentationModel):
             in_channels=in_channels,
             depth=encoder_depth,
             weights=encoder_weights,
+            other_params = other_params,
         )
 
         self.decoder = UnetDecoder(

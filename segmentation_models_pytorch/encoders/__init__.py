@@ -36,14 +36,19 @@ encoders.update(timm_regnet_encoders)
 encoders.update(timm_sknet_encoders)
 
 
-def get_encoder(name, in_channels=3, depth=5, weights=None):
+def get_encoder(name, in_channels=3, depth=5, weights=None, other_params=None):
 
     try:
         Encoder = encoders[name]["encoder"]
     except KeyError:
         raise KeyError("Wrong encoder name `{}`, supported encoders: {}".format(name, list(encoders.keys())))
-
-    params = encoders[name]["params"]
+    
+    if other_params is None:
+        params = encoders[name]["params"]
+    
+    if isinstance(other_params, dict):
+        params.update(other_params)
+    
     params.update(depth=depth)
     encoder = Encoder(**params)
 

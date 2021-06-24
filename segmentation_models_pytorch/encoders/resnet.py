@@ -30,8 +30,51 @@ from torchvision.models.resnet import ResNet
 from torchvision.models.resnet import BasicBlock
 from torchvision.models.resnet import Bottleneck
 from pretrainedmodels.models.torchvision_models import pretrained_settings
+import torch.utils.model_zoo as model_zoo
 
 from ._base import EncoderMixin
+
+from TYY_stodepth_lineardecay import ResNet_StoDepth_lineardecay
+
+class StochResNetEncoder(ResNet_StoDepth_lineardecay, EncoderMixin):
+    def __init__(self, out_channels, depth=5, prob_0_L=[0.5,0.5], multFlag=True, **kwargs):
+        super().__init__(**kwargs)
+        self._depth = depth
+        self._out_channels = out_channels
+        self._in_channels = 3
+        self._prob_0_L = prob_0_L
+        self._multFlag = multFlag
+
+        del self.fc
+        del self.avgpool
+
+    def get_stages(self):
+        return [
+            nn.Identity(),
+            nn.Sequential(self.conv1, self.bn1, self.relu),
+            nn.Sequential(self.maxpool, self.layer1),
+            self.layer2,
+            self.layer3,
+            self.layer4,
+        ]
+
+    def forward(self, x):
+        stages = self.get_stages()
+
+        features = []
+        for i in range(self._depth + 1):
+            x = stages[i](x)
+            features.append(x)
+
+        return features
+
+    def load_state_dict(self):
+        #state_dict.pop("fc.bias")
+        #state_dict.pop("fc.weight")
+        if pretrained:
+            model.load_state_dict(model_zoo.load_url(model_urls['stoch_resnet18']))
+        super().load_state_dict()
+        #super().load_state_dict(state_dict, **kwargs)
 
 
 class ResNetEncoder(ResNet, EncoderMixin):
@@ -71,6 +114,10 @@ class ResNetEncoder(ResNet, EncoderMixin):
 
 
 new_settings = {
+    "stoch_resnet18": {
+        "ssl": "https://download.pytorch.org/models/resnet18-5c106cde.pth",
+        "swsl": "https://download.pytorch.org/models/resnet18-5c106cde.pth"
+    },
     "resnet18": {
         "ssl": "https://dl.fbaipublicfiles.com/semiweaksupervision/model_files/semi_supervised_resnet18-d92f0530.pth",
         "swsl": "https://dl.fbaipublicfiles.com/semiweaksupervision/model_files/semi_weakly_supervised_resnet18-118f1556.pth"
@@ -124,6 +171,14 @@ for model_name, sources in new_settings.items():
 
 
 resnet_encoders = {
+    "stoch_resnet18": {
+        "encoder": ResNetEncoder,
+        "pretrained_settings": pretrained_settings["stoch_resnet18"],
+        "params": {
+            "out_channels": (3, 64, 64, 128, 256, 512),
+            "block": BasicBlock,
+            "layers": [2, 2, 2, 2],
+        },
     "resnet18": {
         "encoder": ResNetEncoder,
         "pretrained_settings": pretrained_settings["resnet18"],
