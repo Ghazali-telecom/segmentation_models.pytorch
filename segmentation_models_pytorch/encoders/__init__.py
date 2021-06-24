@@ -43,8 +43,7 @@ def get_encoder(name, in_channels=3, depth=5, weights=None, other_params=None):
     except KeyError:
         raise KeyError("Wrong encoder name `{}`, supported encoders: {}".format(name, list(encoders.keys())))
     
-    if other_params is None:
-        params = encoders[name]["params"]
+    params = encoders[name]["params"]
     
     if isinstance(other_params, dict):
         params.update(other_params)
