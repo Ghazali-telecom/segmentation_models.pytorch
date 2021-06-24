@@ -34,10 +34,10 @@ import torch.utils.model_zoo as model_zoo
 
 from ._base import EncoderMixin
 
-from .TYY_stodepth_lineardecay import ResNet_StoDepth_lineardecay
+from .TYY_stodepth_lineardecay import ResNet_StoDepth_lineardecay, StoDepth_BasicBlock
 
 class StochResNetEncoder(ResNet_StoDepth_lineardecay, EncoderMixin):
-    def __init__(self, out_channels, depth=5, prob_0_L=[0.5,0.5], multFlag=True, **kwargs):
+    def __init__(self, out_channels, depth=5, prob_0_L=[1,0.5], multFlag=True, **kwargs):
         super().__init__(**kwargs)
         self._depth = depth
         self._out_channels = out_channels
@@ -69,10 +69,9 @@ class StochResNetEncoder(ResNet_StoDepth_lineardecay, EncoderMixin):
         return features
 
     def load_state_dict(self, state_dict, **kwargs):
-        #state_dict.pop("fc.bias")
-        #state_dict.pop("fc.weight")
-        if pretrained:
-            model.load_state_dict(model_zoo.load_url(model_urls['stoch_resnet18']))
+        state_dict.pop("fc.bias")
+        state_dict.pop("fc.weight")
+        model.load_state_dict(model_zoo.load_url(model_urls['stoch_resnet18']))
         super().load_state_dict()
         #super().load_state_dict(state_dict, **kwargs)
 
@@ -171,6 +170,15 @@ for model_name, sources in new_settings.items():
 
 
 resnet_encoders = {
+    "stoch_resnet18": {
+        "encoder": StochResNetEncoder,
+        "pretrained_settings": pretrained_settings["stoch_resnet18"],
+        "params": {
+            "out_channels": (3, 64, 64, 128, 256, 512),
+            "block": StoDepth_BasicBlock,
+            "layers": [2, 2, 2, 2],
+        },
+    },
     "resnet18": {
         "encoder": ResNetEncoder,
         "pretrained_settings": pretrained_settings["resnet18"],
