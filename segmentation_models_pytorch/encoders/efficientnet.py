@@ -35,7 +35,7 @@ class EfficientNetEncoder(EfficientNet, EncoderMixin):
         if not drop_connect_rate is None:
             blocks_args, global_params = get_model_params(model_name, override_params={'drop_connect_rate':drop_connect_rate})
         else:
-            blocks_args, global_params = get_model_params(model_name})
+            blocks_args, global_params = get_model_params(model_name)
         super().__init__(blocks_args, global_params)
 
         self._stage_idxs = stage_idxs
