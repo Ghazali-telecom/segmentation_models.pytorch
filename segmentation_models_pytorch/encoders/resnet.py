@@ -68,7 +68,7 @@ class StochResNetEncoder(ResNet_StoDepth_lineardecay, EncoderMixin):
 
         return features
 
-    def load_state_dict(self):
+    def load_state_dict(self, state_dict, **kwargs):
         #state_dict.pop("fc.bias")
         #state_dict.pop("fc.weight")
         if pretrained:
@@ -171,14 +171,6 @@ for model_name, sources in new_settings.items():
 
 
 resnet_encoders = {
-    "stoch_resnet18": {
-        "encoder": ResNetEncoder,
-        "pretrained_settings": pretrained_settings["stoch_resnet18"],
-        "params": {
-            "out_channels": (3, 64, 64, 128, 256, 512),
-            "block": BasicBlock,
-            "layers": [2, 2, 2, 2],
-        },
     "resnet18": {
         "encoder": ResNetEncoder,
         "pretrained_settings": pretrained_settings["resnet18"],
