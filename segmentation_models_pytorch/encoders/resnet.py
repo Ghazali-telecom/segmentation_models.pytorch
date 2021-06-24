@@ -38,7 +38,7 @@ from .TYY_stodepth_lineardecay import ResNet_StoDepth_lineardecay, StoDepth_Basi
 
 class StochResNetEncoder(ResNet_StoDepth_lineardecay, EncoderMixin):
     def __init__(self, out_channels, depth=5, prob_0_L=[1,0.5], multFlag=True, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(prob_0_L=prob_0_L, multFlag=multFlag, **kwargs)
         self._depth = depth
         self._out_channels = out_channels
         self._in_channels = 3
