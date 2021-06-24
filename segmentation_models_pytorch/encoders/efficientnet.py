@@ -30,9 +30,12 @@ from ._base import EncoderMixin
 
 
 class EfficientNetEncoder(EfficientNet, EncoderMixin):
-    def __init__(self, stage_idxs, out_channels, model_name, depth=5, override_params=None):
-
-        blocks_args, global_params = get_model_params(model_name, override_params=override_params)
+    def __init__(self, stage_idxs, out_channels, model_name, depth=5, drop_connect_rate=None):
+        
+        if not drop_connect_rate is None:
+            blocks_args, global_params = get_model_params(model_name, override_params={'drop_connect_rate':drop_connect_rate})
+        else:
+            blocks_args, global_params = get_model_params(model_name})
         super().__init__(blocks_args, global_params)
 
         self._stage_idxs = stage_idxs
