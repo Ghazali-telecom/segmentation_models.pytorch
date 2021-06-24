@@ -71,9 +71,7 @@ class StochResNetEncoder(ResNet_StoDepth_lineardecay, EncoderMixin):
     def load_state_dict(self, state_dict, **kwargs):
         state_dict.pop("fc.bias")
         state_dict.pop("fc.weight")
-        model.load_state_dict(model_zoo.load_url(model_urls['stoch_resnet18']))
-        super().load_state_dict()
-        #super().load_state_dict(state_dict, **kwargs)
+        super().load_state_dict(state_dict, **kwargs)
 
 
 class ResNetEncoder(ResNet, EncoderMixin):
