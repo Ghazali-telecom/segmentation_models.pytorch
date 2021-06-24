@@ -34,7 +34,7 @@ import torch.utils.model_zoo as model_zoo
 
 from ._base import EncoderMixin
 
-from ..stochresnet.TYY_stodepth_lineardecay import ResNet_StoDepth_lineardecay
+from .TYY_stodepth_lineardecay import ResNet_StoDepth_lineardecay
 
 class StochResNetEncoder(ResNet_StoDepth_lineardecay, EncoderMixin):
     def __init__(self, out_channels, depth=5, prob_0_L=[0.5,0.5], multFlag=True, **kwargs):
