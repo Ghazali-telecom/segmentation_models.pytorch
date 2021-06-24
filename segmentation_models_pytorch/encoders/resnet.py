@@ -114,8 +114,7 @@ class ResNetEncoder(ResNet, EncoderMixin):
 
 new_settings = {
     "stoch_resnet18": {
-        "ssl": "https://download.pytorch.org/models/resnet18-5c106cde.pth",
-        "swsl": "https://download.pytorch.org/models/resnet18-5c106cde.pth"
+        "imagenet": "https://download.pytorch.org/models/resnet18-5c106cde.pth",
     },
     "resnet18": {
         "ssl": "https://dl.fbaipublicfiles.com/semiweaksupervision/model_files/semi_supervised_resnet18-d92f0530.pth",
